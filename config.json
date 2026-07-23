@@ -1,0 +1,115 @@
+{
+    "name": "redstamp",
+    "description": "Convert REDCap data to SDTM",
+    "namespace": "Vanderbilt\\REDSTAMP\\ExternalModule",
+    "documentation": "README.md",
+    "framework-version": 16,
+    "authors": [
+        {
+            "name": "M. Commodore",
+            "email": "datacore@vumc.org",
+            "institution": "Vanderbilt University Medical Center"
+        }
+    ],
+	"system-settings": [
+		{
+			"key": "cdisc_api_key",
+			"name": "cdisc_api_key",
+			"type": "password"
+		}
+	],
+    "project-settings": [
+			{
+				"key": "active_sdtmig",
+				"name": "active_sdtmig",
+				"type": "text",
+				"hidden": true
+			},
+			{
+				"key": "active_sdtmct",
+				"name": "active_sdtmct",
+				"type": "text",
+				"hidden": true
+			},
+			{
+				"key": "active_study_level_domains",
+				"name": "active_study_level_domains",
+				"type": "json",
+				"hidden": false
+			},
+			{
+				"key": "active_subject_level_domains",
+				"name": "active_subject_level_domains",
+				"type": "json",
+				"hidden": false
+			}
+    ],
+    "links": {
+        "project": [
+            {
+                "name": "REDSTAMP Setup",
+                "key": "configPage",
+                "icon": "fa fa-gear",
+                "url": "interfaces/sdtm_config_page.php",
+                "show-header-and-footer": true
+            },
+            {
+                "name": "SDTM -> REDCap mapping",
+                "key": "twigpage1",
+                "icon": "fa fa-receipt",
+                "url": "interfaces/sdtm_to_redcap.php",
+                "show-header-and-footer": true
+            },
+            {
+                "name": "SDTM -> REDCap mapping study",
+                "key": "sdtmToRedcapStudyLevel",
+                "icon": "fa fa-receipt",
+                "url": "interfaces/sdtm_to_redcap_study_level.php",
+                "show-header-and-footer": true
+            },
+            {
+                "name": "SDTM -> REDCap mapping subjects",
+                "key": "sdtmToRedcapSubjectLevel",
+                "icon": "fa fa-receipt",
+                "url": "interfaces/sdtm_to_redcap_subject_level.php",
+                "show-header-and-footer": true
+            },
+            {
+                "name": "REDCap -> SDTM viewing page",
+                "key": "twigpage2",
+                "icon": "fa fa-receipt",
+                "url": "interfaces/redcap_to_sdtm.php",
+                "show-header-and-footer": true
+            },
+            {
+                "name": "test code",
+                "key": "test",
+                "icon": "fa fa-code",
+                "url": "interfaces/test.php",
+                "show-header-and-footer": true
+            },
+            {
+                "name": "test page",
+                "key": "testpage",
+                "icon": "fa fa-code",
+                "url": "interfaces/test_page.php",
+                "show-header-and-footer": true
+            },
+            {
+                "name": "demo",
+                "key": "demo",
+                "icon": "fa fa-cloud",
+                "url": "interfaces/demo.php",
+                "show-header-and-footer": true
+            }
+        ]
+    },
+	"auth-ajax-actions": [
+		"store_calc_mapping",
+		"save_project_setting",
+		"get_domains",
+		"get_sdtm_ctr",
+		"check_logic",
+		"lazy_load"
+	]
+}

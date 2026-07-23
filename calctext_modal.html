@@ -1,0 +1,151 @@
+<!-- <button id="openModalButton">Open Form</button> -->
+
+<div id="dummy_element"></div>
+
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button">&times;</span>
+    <form id="myForm">
+      <label for="calc_input">calctext:</label>
+      <input type="text" id="calc_input" name="calc_input">
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+
+
+<div id="dialog-form" title="calctext mapping">
+  <!-- <p class="validateTips">All form fields are required.</p> -->
+
+  <form>
+    <fieldset>
+      <label for="calctext_mapping">calctext</label>
+      <input type="textarea" name="calctext_mapping" id="calctext_mapping" value="" class="text ui-widget-content ui-corner-all">
+
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+
+
+    <!-- LOGIC BUILDER DIALOG POP-UP -->
+    <div id="logic_builder" title='<span style="color:var(--online-designer-branchinglogic-color);"><?=RCIcon::BranchingLogic("me-1").RCView::tt("design_225")?></span>' style="display:none;">
+        <p style="line-height: 1.2em;font-size:12px;border-bottom:1px solid #ccc;padding-bottom:10px;margin:5px 0 0;">
+            <?php echo $lang['design_226'] ?>
+        </p>
+
+        <div style="padding-top:10px;">
+            <table cellspacing="0" width="100%">
+
+                <tr>
+                    <td valign="top" colspan="2" style="padding-bottom:4px;font-family:verdana;color:#777;font-weight:bold;">
+                        <div style="width:700px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                            <?php echo $lang['design_230'] ?>
+                            <span id="logic_builder_field" style="color:#008000;padding-left:4px;"></span>
+                            <span style="color:#008000;font-weight:normal;">- <i id="logic_builder_label"></i></span>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Advanced Branching Logic text box -->
+                <tr>
+                    <td valign="top" style="padding:15px 20px 0 5px;">
+                        <input checked type="radio" name="optionBranchType" onclick="chooseBranchType(this.value,true);" value="advanced">
+                    </td>
+                    <td valign="top">
+                        <div style="font-weight:bold;padding:15px 20px 0 0;color:#800000;font-family:verdana;">
+                            <?php echo $lang['design_231'] .
+                                "<span style='font-weight:normal;color:#808080;font-size:11px;margin-right:4px;margin-left:40px;'>
+											{$lang['design_748']}
+										</span>
+										<button class='btn btn-xs btn-defaultrc' style='color:#1049a0;margin-right:4px;font-size:11px;padding:0px 3px 1px;line-height: 14px;' onclick=\"helpPopup('3','category_16_question_1_tab_3');return false;\">".RCIcon::BranchingLogic("fa-xs me-1").RCView::tt("database_mods_74")."</button>
+										<button class='btn btn-xs btn-rcgreen btn-rcgreen-light' style='margin-right:4px;font-size:11px;padding:0px 3px 1px;line-height:14px;'  onclick=\"smartVariableExplainPopup();return false;\">[<i class='fas fa-bolt fa-xs' style='margin:0 1px;'></i>] {$lang['global_146']}</button>
+										<button class='btn btn-xs btn-primaryrc btn-primaryrc-light' style='font-size:11px;padding:1px 3px;line-height:14px;'  onclick=\"specialFunctionsExplanation();return false;\"><i class='fas fa-square-root-alt' style='margin:0 2px 0 1px;'></i> {$lang['design_839']}</button>
+										";
+                            ?>
+                        </div>
+                        <div id="logic_builder_advanced" class="chklist" style="border:1px solid #ccc;padding:8px 10px 2px;margin:5px 0 15px;max-width: 710px;">
+                            <div style="padding-bottom:2px;">
+                                <?php echo $lang['design_227'] ?>
+                            </div>
+                            <table style='width: 98%; border: 0;'>
+                                <tr>
+                                    <td colspan='2' style=' width: 100%; border: 0;'><textarea id="advBranchingBox" hasrecordevent="0" style="padding:1px;width:100%;height:65px;resize:auto;" onblur="logicHideSearchTip(this);" onkeydown="logicSuggestSearchTip(this, event, false, true, 0);" onfocus="openLogicEditor($(this))"></textarea><?php echo logicAdd("advBranchingBox"); ?></td>
+                                </tr>
+                                <tr>
+                                    <td style='border: 0; font-weight: bold; text-align: left; vertical-align: middle; height: 20px;' id='advBranchingBox_Ok'>&nbsp;</td>
+                                    <td style='border: 0; text-align: right; vertical-align: top;padding-right:10px;'><a id="linkClearAdv" style="font-family:tahoma;font-size:11px;text-decoration:underline;" href="javascript:;" onclick="$('#advBranchingBox').val('');logicValidate($('#advBranchingBox'), false);"><?php echo $lang['design_232'] ?></a></td>
+                                </tr>
+                            </table>
+                            <script type='text/javascript'>logicValidate($('#advBranchingBox'), false, 0);</script>
+                            <div style="margin: 0 0 4px;">
+                                <span class='logicTesterRecordDropdownLabel'><?php echo $lang['design_705'] ?></span>
+                                <?= Records::renderRecordListAutocompleteDropdown($Proj->project_id, false, 1000, "logicTesterRecordDropdown2", "fs11 x-form-text x-form-field", "", "", null, $lang['global_291'],
+                                    'var circle=\''.APP_PATH_IMAGES.'progress_circle.gif\'; if (this.value !== \'\') $(\'#advBranchingBox_res\').html(\'<img src=\'+circle+\'>\'); else $(\'#advBranchingBox_res\').html(\'\'); logicCheck($(\'#advBranchingBox\'), \'branching\', '.($longitudinal ? 'true' : 'false').', \'\', this.value+'.'\'||'.$event_id.'\', \''.js_escape2($lang['design_706']).'\', \''.js_escape2($lang['design_707']).'\', \''.js_escape2($lang['design_713']).'\', [\''.js_escape2($lang['design_716']).'\', \''.js_escape2($lang['design_717']).'\', \''.js_escape2($lang['design_708']).'\'], \'advBranchingBox\');') ?>
+                                <div id='advBranchingBox_res' style='margin-left:5px;color: green; font-weight: bold;'></div>
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+
+                <!-- OR -->
+                <tr>
+                    <td valign="top" colspan="2" style="padding:8px 15px 8px 0px;font-weight:bold;color:#777;">
+                        &#8212; <?php echo $lang['global_46'] ?> &#8212;
+                    </td>
+                </tr>
+
+                <!-- Drag-n-drop -->
+                <tr>
+                    <td valign="top" style="padding:15px 20px 0 5px;">
+                        <input type="radio" name="optionBranchType" value="drag">
+                    </td>
+                    <td valign="top">
+                        <div style="font-weight:bold;padding:15px 20px 0 0;font-family:verdana;color:#800000;"><?php echo $lang['design_233'] ?></div>
+                        <div id="logic_builder_drag" class="chklist" style="height:270px;border:1px solid #ccc;padding:10px 10px 2px;margin:5px 0;">
+
+                            <table cellspacing="0">
+                                <tr>
+                                    <td valign="bottom" style="width:290px;padding:20px 2px 2px;">
+                                        <!-- Div containing options to drag over -->
+                                        <b><?php echo $lang['design_234'] ?></b><br>
+                                        <?php echo $lang['design_235'] ?><br>
+                                        <div class="listBox" id="nameList" style="height:150px;overflow:auto;cursor:move;">
+                                            <ul id="ulnameList"></ul>
+                                        </div>
+                                        <div style="font-size:11px;">&nbsp;</div>
+                                    </td>
+                                    <td valign="middle" style="text-align:center;font-weight:bold;font-size:11px;color:green;padding:0px 20px;">
+                                        <img src="<?php echo APP_PATH_IMAGES ?>arrow_right.png"><br><br>
+                                        <?php echo $lang['design_236'] ?><br>
+                                        <?php echo $lang['global_43'] ?><br>
+                                        <?php echo $lang['design_237'] ?><br><br>
+                                        <img src="<?php echo APP_PATH_IMAGES ?>arrow_right.png">
+                                    </td>
+                                    <td valign="bottom" style="width:290px;padding:0px 2px 2px;">
+                                        <!-- Div where options will be dragged to -->
+                                        <b><?php echo $lang['design_227'] ?></b><br>
+                                        <input type="radio" name="brOper" id="brOperAnd" value="and" onclick="updateAdvBranchingBox();" checked> <?php echo $lang['design_238'] ?><br>
+                                        <input type="radio" name="brOper" id="brOperOr" value="or" onclick="updateAdvBranchingBox();"> <?php echo $lang['design_239'] ?><br>
+                                        <div class="listBox" id="dropZone1" style="height:150px;overflow:auto;">
+                                            <ul id="mylist" style="list-style:none;">
+                                            </ul>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <a id="linkClearDrag" style="font-family:tahoma;font-size:11px;text-decoration:underline;" href="javascript:;" onclick="
+												$('#dropZone1').html('');
+												updateAdvBranchingBox();
+											"><?php echo $lang['design_232'] ?></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>

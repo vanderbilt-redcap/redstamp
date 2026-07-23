@@ -1,0 +1,286 @@
+<title>KCKCKC Template map page title</title>
+{% block domain_level %}
+{% endblock %}
+
+<!-- TODO: replace yucky inline script, hacky retention -->
+<script>
+  function mergeParamsWithForm(event) {
+    const form = event.target;
+    // Get current URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+		const dont_carry = ["domain_filter", "redcap_csrf_token"];
+
+    // Add each parameter as a hidden input field
+    for (const [key, value] of urlParams.entries()) {
+			if (dont_carry.includes(key)) continue;
+      const hiddenInput = document.createElement('input');
+      hiddenInput.type = 'hidden';
+      hiddenInput.name = key;
+      hiddenInput.value = value;
+      form.appendChild(hiddenInput);
+    }
+  }
+</script>
+
+<form  method="GET" onsubmit="mergeParamsWithForm(event)"">
+  <label for="domain_filter">Select domain:</label>
+	<!-- NOTE: onsubmit in form does not fire with onchange -->
+	<select name="domain_filter" id="domain_filter" onchange="mergeParamsWithForm(event); this.form.submit();">
+		{% for domain in sdtm_domains %}
+			<option
+				value="{{ domain.name }}"
+				{% if domain.name == get.domain_filter %}
+				selected disabled
+				{% endif %}
+			>
+				{{  domain.name }} - {{ domain.label }}
+			</option>
+		{% endfor %}
+	</select>
+	<!-- <button type="submit">Apply Domain Filter</button> -->
+</form>
+
+<div id='factor_tbl'>
+</div>
+
+{% block domain_details %}
+	<table
+		class="table table-striped w-50"
+		id="domain_details_table"
+		style="caption-side: top"
+	>
+		<caption>Currently selected domain details:</caption>
+		<tr>
+			<td>Domain Label</td>		
+			<td>{{sdtm_domain['label']}}</td>		
+		</tr> 
+		<tr>
+			<td>Domain Name</td>
+			<td>{{sdtm_domain['name']}}</td>		
+		</tr> 
+		<tr>
+			<td>Domain Description</td>		
+			<td>{{sdtm_domain['description']}}</td>		
+		</tr> 
+		<tr>
+			<td>Domain Structure</td>		
+			<td>{{sdtm_domain['datasetStructure']}}</td>		
+		</tr> 
+	</table>
+
+	<!-- Option 2:
+			 <p>Domain Label (name): {{sdtm_domain['label']}} ({{sdtm_domain['name']}})</p>
+			 <p>Description: {{sdtm_domain['description']}}</p>
+			 <p>Structure: {{sdtm_domain['datasetStructure']}}</p> -->
+{% endblock domain_details %}
+
+{% block mapping_progress %}
+<p>Mapping progress by type</p>
+
+<div class="progress-stacked">
+  {% set map_types_progress = ['Req', 'Exp', 'Perm'] %}
+  {% for type in map_types_progress %}
+    
+    |
+    <!-- TODO: center this above bar -->
+    <span style="text-align: center; vertical-align: middle;"> {{type}} </span>
+    <div class="progress" role="progressbar" aria-label="progress {{type}}" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 33%">
+      <div class="progress-bar progress-bar-animated progress-bar-striped" id="mapping-progress-bar-{{type}}" style="width: 0%"></div>
+    </div>
+  {% endfor %}
+
+</div>
+
+{% endblock mapping_progress %}
+
+<div id="status-update-alert-template" class="status-update alert" role="alert" style="display: none;">
+</div>
+
+{{ sdtm_domain.name }}
+{% block mapping_table %}
+{% set current_mappings = getMappings(sdtm_domain.name) %}
+{% set max_instance = current_mappings ? max(current_mappings|column('instance')) : 0 %}
+
+<!-- HACK: expose dataset name until I move filtering to top of page -->
+{#% set exposed_cols = ["Variable Name", "Variable Label", "Core"] %#}
+{% set exposed_cols = ["Variable Name", "Variable Label", "Core"] %}
+<!-- Adjusted for JSON -->
+{% set exposed_cols = ["name", "label", "core"] %}
+
+{% set filter_cols = ["Dataset Name", "Class", "core"] %}
+{% set truncate_cols = ["CDISC Notes"] %}
+
+<!-- TODO: filter for domain -->
+<!-- <table
+     id="table"
+     class="table table-striped table-responsive table-hover"
+
+     data-icons-prefix="fa"
+     data-icons="icons"
+
+     data-show-columns="true"
+
+     data-filter-control="true"
+     data-visible-search="true"
+     data-show-filter-control-switch="true"
+     data-sort-select-options="true"
+     data-hide-unused-select-options="true"
+
+     data-show-search-clear-button="true"
+     > -->
+
+<!-- TODO: add these attrs back once this issue is resolved: https://github.com/wenzhixin/bootstrap-table/issues/7719 -->
+<!-- data-icons-prefix="fa"
+     data-icons="icons" -->
+
+	<!-- <button type="button" class="btn btn-outline-warning" id="transpose-table">Transpose</button> -->
+{% set sdtm_fields = sdtm_domain['datasetVariables'] %}
+
+<button type="button" class="btn btn-outline-warning" id="add-output-row">Add Output Row</button>
+
+
+<!-- HACK: element needed for logicSuggestTip -->
+<!-- <div id="LSC_id_input_AG__STUDYID" class="fs-item fs-item-parent" style="display: none;"></div> -->
+
+<table
+	id="table"
+	class="table table-striped table-responsive table-hover"
+
+	data-show-columns="true"
+	data-icons-prefix="fa"
+
+	data-filter-control="true"
+	data-visible-search="true"
+	data-show-filter-control-switch="true"
+	data-sort-select-options="true"
+	data-hide-unused-select-options="true"
+
+	data-show-search-clear-button="true"
+
+	style="table-layout: auto; width: fit-content; border-collapse: collapse;"
+>
+	<thead class="sticky-header">
+		<tr>
+			<!-- autopopulate from csv -->
+			{% for k, v in sdtm_fields|first %}
+				{% if k in exposed_cols %}
+					{% if k in filter_cols %}
+						<th
+							scope="col"
+							data-filter-control="select"
+							data-filter-strict-search="true"
+							data-field="{{k|lower|replace({' ': '-'})}}"
+						>
+							{{k}}
+						</th>
+					{% else %}
+						<th scope="col">{{k}}</th>
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+
+			<!-- add rc specific fields -->
+			{% for i in 0..max_instance %}
+				<!-- TODO: consider if all CSS probably live in files -->
+				<!-- TODO: this needs to support stored column names -->
+				<th scope="col" style="text-align: center;">
+					constrained unique name {{i}}
+					</br>
+					{% if domain_level == "subject" %}
+						<button type="button" class="btn btn-secondary add-conditional-logic" title="Conditional logic, define conditions under which this output will be applied (default always)." id="conditional_logic_{{i}}">
+							<i class="fa-solid fa-arrows-split-up-and-left fa-rotate-180"></i>
+						</button>
+					{% endif %}
+
+					<button type="button" class="btn btn-secondary" title="Notes" id="notes" disabled>
+						<i class="fa-solid fa-pencil"></i>
+					</button>
+
+					<button type="button" class="btn btn-secondary add-output-row" id="add_row" title="Add output row">
+						<!-- FIXME: Can't use bi due to my hack to force fa icons lol -->
+						<!-- <i class="bi bi-plus-lg"></i> -->
+						+
+					</button>
+
+					<button type="button" class="btn btn-secondary" title="Clone output row" id="clone_row" disabled>
+						<i class="fa-solid fa-clone"></i>
+					</button>
+
+					<span aria-label="Delete row" role="tooltip">
+					<button type="button" class="btn btn-secondary" title="Delete this output row" id="delete_row" disabled>
+						<i class="fa-solid fa-trash-can"></i>
+					</button>
+					</span>
+				</th>
+			{% endfor %}
+		</tr>
+	</thead>
+
+	<tbody class="table-group-divider">
+
+		<!-- placeholder row for buttons that are currently in thead -->
+		<!-- <tr id="{{uid}}" class="req-{{row['core']}} map_row">
+				 <td></td>
+				 <td></td>
+				 <td></td>
+				 <td></td>
+				 </tr> -->
+		{% set conditional_logic_field = {
+			'core': '<i class="fa-solid fa-arrows-split-up-and-left fa-rotate-180"></i>',
+			'name': 'conditional_logic',
+			'label': '<i class="fa-solid fa-arrows-split-up-and-left fa-rotate-180"></i>'
+			}
+		%}
+		{% set sdtm_fields = [conditional_logic_field]|merge(sdtm_fields) %}
+		{% for row in sdtm_fields %}
+			<!-- TODO: should probably filter these out in the sdtm_fields provider -->
+			{% if row['name'] not in ["STUDYID", "DOMAIN"] %}
+			<!-- TODO: source Dataset Name from domain, it's not really necessary anymore -->
+			{#% set uid = row['Dataset Name'] ~ '__' ~ row['name'] %#}
+			{% set uid = sdtm_domain['name'] ~ '__' ~ row['name'] %}
+			<tr id="{{uid}}" class="req-{{row['core']}} map_row"
+				{% if row['name'] == "conditional_logic" %}
+				style=""
+				{% endif %}
+			>
+				<!-- TODO: JSON is in a different order :( -->
+				{% for k, v in row %}
+					{% if k in exposed_cols %}
+						<td> {{v|raw}} </td>
+					{% endif %}
+				{% endfor %}
+				<!-- Add info -->
+				{% block info_content %}
+				<!-- FIXME: remove if stable -->
+				{% endblock %}
+
+				<!-- add mapping output rows -->
+				{% for i in 0..max_instance %}
+					{#% if i > 0 %#}
+					{% set uid_i = uid ~ '__' ~ i %}
+					{#% endif %#}
+					<td>
+						<!-- <button type="button" class="btn btn-sm btn-secondary map_thing_button">map</button> -->
+						<!-- <input class="calc_text_input" style="display: none;" value="{{current_mappings[uid]}}"> -->
+						<input class="calc_text_input col_instance_{{i}}" id="input_{{uid_i}}" name="input_{{uid_i}}" style="" value="{{current_mappings[uid_i]['calc_text']}}"
+							onblur="logicHideSearchTip(this)"
+							onfocus="openLogicEditor($(this))"
+							onkeydown="logicSuggestSearchTip($(this), null, false, true, 0)"
+						>
+
+						<!-- HACK: element needed for logicSuggestTip -->
+						<div id="LSC_id_input_{{uid_i}}" class="fs-item fs-item-parent" style="display: none;"></div>
+					</td>
+				{% endfor %}
+			</tr>
+
+			{% endif %}
+		{% endfor %}
+
+
+	</tbody>
+</table>
+{% endblock mapping_table %}
+
+<!-- HACK: confetti for demo only -->
+{{ addJS("./node_modules/canvas-confetti/dist/confetti.browser.js") }}

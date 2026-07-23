@@ -1,0 +1,79 @@
+<!-- Hardcoded table for SDTMIG until direction given -->
+<!-- Table stolen from ProjectSetup/index.php -->
+{% if false %}
+<table cellspacing="0" width="100%">
+	<tr>
+		<td valign="top" style="width:70px;text-align:center;">
+			<!-- Icon -->
+			<div class="opacity25">
+				<!-- FIXME: hardcoded version, icky!  -->
+				<img id="img-sdtmig" src="/redcap_v16.0.2/Resources/images/checkbox_cross.png">
+			</div>
+			<!-- Colored text below icon -->
+			<div id="lbl-{{item['name']}}" style='color:<?php echo $status_text_color ?>;'>status text</div>
+			<!-- "I'm done!" button OR "Not complete?" link -->
+			<?php if ($user_rights['design'] && $value['status'] != '2' && isset($value['name']) && !empty($value['name'])) { ?>
+			<div class="chklist_comp">
+				<button id="btn-<?php echo $value['name'] ?>" class="btn btn-defaultrc btn-xs doneBtn" title="<?php echo $lang['setup_01'] ?>" onclick="doDoneBtn('<?php echo $value['name'] ?>',1);"><?php echo $lang['setup_02'] ?></button>
+			</div>
+			<?php } elseif ($user_rights['design'] && isset($value['name']) && !empty($value['name']) && isset($checkedOff[$value['name']])) { ?>
+			<div class="chklist_comp">
+				<a href="javascript:;" style="" onclick="doDoneBtn('<?php echo $value['name'] ?>',0);"><?php echo $lang['setup_04'] ?></a>
+			</div>
+			<?php } ?>
+		</td>
+		<td valign="top" style="padding-left:30px;">
+			<div class="chklisthdr">
+				<span>SDTMIG Header</span>
+			</div>
+			<div class="chklisttext">
+				You need to dertermine which version of SDTM IG you would like to use for this project.
+				<button id="select-sdtmig" class="config-button">Select SDTM IG Version</button>
+			</div>
+		</td>
+	</tr>
+
+</table>
+{% endif %}
+
+{% set steps = ['1', '2', '3'] %}
+
+
+{% for item in chklist  ?? [] %}
+	{% if false %}
+<!-- Table stolen from ProjectSetup/index.php -->
+<table cellspacing="0" width="100%">
+	<tr>
+		<td valign="top" style="width:70px;text-align:center;">
+			<!-- Icon -->
+			<div class="opacity25">
+				<img id="img-<?php echo isset($value['name']) ? $value['name'] : ''; ?>" src="<?php echo APP_PATH_IMAGES . $icon ?>">
+				<img id="img-{{item['name']}}" src="/redcap_v16.0.2/Resources/images/checkbox_cross.png">
+			</div>
+			<!-- Colored text below icon -->
+			<div id="lbl-{{item['name']}}" style='color:<?php echo $status_text_color ?>;'>status text</div>
+			<!-- "I'm done!" button OR "Not complete?" link -->
+			<?php if ($user_rights['design'] && $value['status'] != '2' && isset($value['name']) && !empty($value['name'])) { ?>
+			<div class="chklist_comp">
+				<button id="btn-<?php echo $value['name'] ?>" class="btn btn-defaultrc btn-xs doneBtn" title="<?php echo $lang['setup_01'] ?>" onclick="doDoneBtn('<?php echo $value['name'] ?>',1);"><?php echo $lang['setup_02'] ?></button>
+			</div>
+			<?php } elseif ($user_rights['design'] && isset($value['name']) && !empty($value['name']) && isset($checkedOff[$value['name']])) { ?>
+			<div class="chklist_comp">
+				<a href="javascript:;" style="" onclick="doDoneBtn('<?php echo $value['name'] ?>',0);"><?php echo $lang['setup_04'] ?></a>
+			</div>
+			<?php } ?>
+		</td>
+		<td valign="top" style="padding-left:30px;">
+			<div class="chklisthdr">
+				<span>{{item['header']}}</span>
+			</div>
+			<div class="chklisttext">
+				{{item['text']}}
+			</div>
+		</td>
+	</tr>
+
+</table>
+{% endif %}
+{% endfor %}
+
