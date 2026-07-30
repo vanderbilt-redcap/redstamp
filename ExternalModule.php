@@ -27,7 +27,18 @@ class ExternalModule extends AbstractExternalModule
 			"sdtm_config_page",
 			$this->getUrl("interfaces/sdtm_config_page.php")
 		);
-		$this->addJS("js/inject_config_tab.js");
+		$inject_tab_pages = [
+			"index.php", // equivalent to project_home_page
+			"ProjectSetup/index.php",
+			"ProjectSetup/other_functionality.php",
+			"ProjectSetup/project_revision_history.php"
+		];
+		if (
+			in_array(PAGE, $inject_tab_pages) ||
+			(PAGE === "external_modules/index.php" && $_GET['prefix'] === "redstamp")
+		) {
+			$this->addJS("js/inject_config_tab.js");
+		}
 	}
 
 
