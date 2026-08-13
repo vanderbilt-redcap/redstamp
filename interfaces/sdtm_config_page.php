@@ -58,7 +58,9 @@ if (is_numeric($project_id)) {
 								"</br>" .
 								'<button id="select-sdtmig" class="config-button btn btn-defaultrc btn-xs fs13">Select SDTM IG Version</button>' .
 								"</br>" .
-								'<button id="select-sdtmct" class="config-button btn btn-defaultrc btn-xs fs13">Select CT Version</button>'
+								'<button id="select-sdtmct" class="config-button btn btn-defaultrc btn-xs fs13">Select CT Version</button>' .
+								"</br>" .
+								'<button id="select-define-xml" class="config-button btn btn-defaultrc btn-xs fs13">Select Define.XML Version</button>'
 		],
 		[
 			'name' => 'sdtm_domains',
