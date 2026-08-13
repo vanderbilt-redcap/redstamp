@@ -432,9 +432,12 @@ $(document).ready(() => {
 							"value": active_values
 						};
 						module.ajax("save_project_setting", payload).then((response) => {
-							console.log(response);
+							// update module_project_settings in accordance with whatever got set here to avoid page reloads
+							// TODO: verify this isn't just the additions
+							module_project_settings[project_setting_key] = active_values;
 							$("button.config-button").prop('disabled', false);
 							$(this).dialog('close');
+							ensureOrder();
 						});
 						$("button.config-button").prop('disabled', false);
 					}
@@ -505,6 +508,90 @@ $(document).ready(() => {
 				}
 			]
 		});
+
+	}
+
+	ensureOrder();
+
+	// disable buttons based on status of settings
+	function ensureOrder() {
+		// HACK: for testing, pretend some are empty
+		// module_project_settings['active_sdtmig'] = null;
+		// module_project_settings['active_sdtmct'] = null;
+
+		const mapping_page_button_ids = [
+			"add-edit-non-subject-level-info",
+			"add-edit-variable-mappings"
+		];
+		const domain_selection_ids = [
+			"id-study-level-domains",
+			"id-subject-level-domains",
+		];
+
+		// module setting key: html button element's ID for disabling
+		// TODO: add object criteria for disabling here, not every setting is an array
+		// {
+		// 	"module_setting_key": {
+		// 		"validation": "key_type",
+		// 		"element_ids": [
+		// 			list of html IDs that should be disabled
+		// 		]
+		// 	}
+		// }
+		// TODO: early exit for high-priority blockers like active_sdtmig and ct? maybe do that as a class instead?
+		const checkers = {
+			"active_sdtmig": {
+				"validation": "populated_string",
+				"element_ids": [
+					"select-sdtmct",
+					...domain_selection_ids,
+					...mapping_page_button_ids
+				]
+			},
+			"active_sdtmct": {
+				"validation": "populated_string",
+				"element_ids": [
+					...domain_selection_ids,
+					...mapping_page_button_ids
+				]
+			},
+			"active_study_level_domains": {
+				"validation": "populated_array",
+				"element_ids": ["add-edit-non-subject-level-info"]
+			},
+			"active_subject_level_domains": {
+				"validation": "populated_array",
+				"element_ids": ["add-edit-variable-mappings"]
+			}
+		};
+
+		for (const [checker_key, checker_obj] of Object.entries(checkers)) {
+			let should_disable = false;
+
+			const setting_value = module_project_settings[checker_key];
+			const validation_type = checker_obj.validation;
+
+			switch(validation_type) {
+			case "populated_array":
+				if (!(Array.isArray(setting_value) && setting_value.length > 0)) {
+					should_disable = true;
+				}
+				break;
+			case "populated_string":
+				if (!((setting_value) && setting_value.length > 0 && setting_value !== "")) {
+					should_disable = true;
+				}
+			}
+
+			if (should_disable) {
+				checker_obj.element_ids.forEach(
+					(element_id) => {
+						const element = $(`button#${element_id}`);
+						element.prop("disabled", true);
+					}
+				);
+			}
+		}
 
 	}
 

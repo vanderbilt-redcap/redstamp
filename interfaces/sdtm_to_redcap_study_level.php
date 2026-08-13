@@ -38,6 +38,10 @@ if (is_numeric($project_id)) {
 	$domain_filter = $_GET["domain_filter"] ?? ($active_domains[0] ?? "ERROR: define domains first");
 	$sdtm_domain = [...array_filter($sdtm_domains, fn ($a) => $a['name'] === $domain_filter)][0];
 
+	if ($sdtm_domain['datasetVariables']) {
+		// TODO: if this isn't set, they shouldn't have gotten here to begin with
+	}
+
 
 	// HACK: bypass EM loadSdtmTwig
 	$html =  $module->getTwig()->render('sdtm_to_redcap_study_level.html.twig', [
