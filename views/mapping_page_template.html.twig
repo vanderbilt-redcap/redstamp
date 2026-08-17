@@ -188,12 +188,12 @@
 					constrained unique name {{i}}
 					</br>
 					{% if domain_level == "subject" %}
-						<button type="button" class="btn btn-secondary add-conditional-logic" title="Conditional logic, define conditions under which this output will be applied (default always)." id="conditional_logic_{{i}}">
+						<button type="button" class="btn btn-secondary add-conditional-logic" title="Conditional logic, define conditions under which this output will be applied (default always)." id="conditional_logic_{{i}}" data-notes-input="input_{{sdtm_domain['name']}}__conditional_logic__{{i}}">
 							<i class="fa-solid fa-arrows-split-up-and-left fa-rotate-180"></i>
 						</button>
 					{% endif %}
 
-					<button type="button" class="btn btn-secondary" title="Notes" id="notes" disabled>
+					<button type="button" class="btn btn-secondary row-notes" title="Notes" id="row_notes_{{i}}" data-notes-input="input_{{sdtm_domain['name']}}__row_notes__{{i}}">
 						<i class="fa-solid fa-pencil"></i>
 					</button>
 
@@ -227,22 +227,32 @@
 				 <td></td>
 				 </tr> -->
 		{% set conditional_logic_field = {
-			'core': '<i class="fa-solid fa-arrows-split-up-and-left fa-rotate-180"></i>',
+			'core': '',
 			'name': 'conditional_logic',
-			'label': '<i class="fa-solid fa-arrows-split-up-and-left fa-rotate-180"></i>'
+			'label': ''
+			}
+		%}
+		{% set row_notes_field = {
+			'core': '',
+			'name': 'row_notes',
+			'label': ''
 			}
 		%}
 		{% set sdtm_fields = [conditional_logic_field]|merge(sdtm_fields) %}
+		{% set sdtm_fields = [row_notes_field]|merge(sdtm_fields) %}
 		{% for row in sdtm_fields %}
 			<!-- TODO: should probably filter these out in the sdtm_fields provider -->
 			{% if row['name'] not in ["STUDYID", "DOMAIN"] %}
 			<!-- TODO: source Dataset Name from domain, it's not really necessary anymore -->
 			{#% set uid = row['Dataset Name'] ~ '__' ~ row['name'] %#}
 			{% set uid = sdtm_domain['name'] ~ '__' ~ row['name'] %}
+			{% set row_style = "" %}
+			{% if row['name'] in ['conditional_logic', 'row_notes'] %}
+				{% set row_style = "display: none;" %}
+			{% endif %}
+				<!-- HACK: these must be present for logicEditor, but they need to be tied to buttons, removing this results in hidden rows being displayed -->
 			<tr id="{{uid}}" class="req-{{row['core']}} map_row"
-				{% if row['name'] == "conditional_logic" %}
-				style=""
-				{% endif %}
+				style="{{row_style}}"
 			>
 				<!-- TODO: JSON is in a different order :( -->
 				{% for k, v in row %}

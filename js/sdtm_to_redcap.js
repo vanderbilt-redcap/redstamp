@@ -57,11 +57,17 @@ $(document).ready(() => {
 
 		$("#table").on('click', 'button.add-conditional-logic', (event) => {
 			event;
-			// TODO: launch logic editor
-			debugger;
-			let this_id = $(event.currentTarget).attr('id');
+			const input_id = $(event.currentTarget).data('notes-input');
 
-			openLogicEditor($(`#input_${this_id}`));
+			openLogicEditor($(`#${input_id}`));
+		});
+
+
+		$("#table").on('click', 'button.row-notes', (event) => {
+			event;
+			const input_id = $(event.currentTarget).data('notes-input');
+			openLogicEditor($(`#${input_id}`));
+
 		});
 
 
@@ -120,6 +126,22 @@ $(document).ready(() => {
 			"instance": instance,
 			"calc_text": calc_text
 		};
+		let highlight_element = $(trigger_input_element).parent("td") ?? null;
+		if (uid.includes("__conditional_logic__")) {
+			const el_find = $(trigger_input_element).attr("data-notes-input");
+			highlight_element = $(`[data-notes-input='${el_find}']`);
+		}
+
+		// notes need to bypass calc vaidation since this is free text
+		if (uid.includes("__row_notes__")) {
+			module.ajax("store_calc_mapping", payload).then((response) => {
+				const button_element_data_attr =
+					$(trigger_input_element).attr("data-notes-input")
+				highlight_element = $(`[data-notes-input='${button_element_data_attr}']`).parent("td");
+				highlight_element.effect('highlight', {}, 2000);
+			});
+			return;
+		}
 
 		module.ajax("check_logic", payload).then((response_valid) => {
 			console.log(response_valid);
@@ -132,7 +154,7 @@ $(document).ready(() => {
 					const highlight_time = 2000;
 					// highlight input element to show save occurred
 					// adapted from REDCap core Resources/js/base.js highlightTable
-					$(trigger_input_element).parent("td").effect('highlight', {}, highlight_time);
+					highlight_element.effect('highlight', {}, highlight_time);
 				});
 			}
 
@@ -261,7 +283,6 @@ $(document).ready(() => {
 			);
 		})
 
-		debugger;
 		let ctr_info = null;
 		if (!uid.endsWith("conditional_logic")) {
 			ctr_info = getCTR(field_info);
