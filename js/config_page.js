@@ -40,8 +40,6 @@ $(document).ready(() => {
 			 *  use module.getUrlParameters to grab PID
 			 *  restrict to subject-level info
 			 */
-			// target_location = "http://localhost:1000/external_modules/?prefix=redstamp&page=interfaces%2Fsdtm_to_redcap&pid=44";
-			// target_location = "http://localhost:1000/external_modules/?prefix=redstamp&page=interfaces%2Fsdtm_to_redcap_study_level&pid=44";
 			target_location = module.getUrl("interfaces/sdtm_to_redcap_study_level.php");
 			window.open(target_location);
 		break;
@@ -194,19 +192,21 @@ $(document).ready(() => {
 
 		$("#myModal").html(html);
 
+		// reach out to CDISC API to fetch params when dropdown is clicked
 		$(`#${setting_uid}-select`).select2({
 			dropdownAutoWidth: true,
 			width: 'auto',
 			// NOTE: ajax sourcing data probably not suitable due to lack of ability to preselect
 			// data: data,
 			ajax: {
-				url: 'http://localhost:1000/external_modules/?prefix=redstamp&page=pages%2Flazy_load&pid=44',
+				url: '/external_modules/?prefix=redstamp&page=pages%2Flazy_load',
 				data: (params) => {
 					let query = {
 						search: params.term,
 						resource: "getAvailableSDTMCTs"
 					}
 
+					debugger;
 					return query;
 
 				},
@@ -239,10 +239,12 @@ $(document).ready(() => {
 			$(`#${setting_uid}-select`).prepend(placeholder).trigger('change');
 			placeholder.disabled = true;
 		} else {
-			// TODO: need to store the human readable text
+			debugger;
+			// HACK: calling the API on modal launch just to get the human readable name
+			// in the event of aggressive rate limiting, store the human readable name and expose it here
 			$.ajax({
 				type: 'GET',
-				url: 'http://localhost:1000/external_modules/?prefix=redstamp&page=pages%2Flazy_load&pid=44',
+				url: '/external_modules/?prefix=redstamp&page=pages%2Flazy_load',
 				data: {
 					resource: "getAvailableSDTMCTs"
 				}
