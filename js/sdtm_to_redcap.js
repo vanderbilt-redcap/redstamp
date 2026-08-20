@@ -145,13 +145,16 @@ $(document).ready(() => {
 
 		module.ajax("check_logic", payload).then((response_valid) => {
 			console.log(response_valid);
+			highlight_element.removeClass("failed-logic");
+			const highlight_time = 2000;
 
 			if (!response_valid) {
-				alert("disgusting, I'm not saving that!");
+				highlight_element.addClass("failed-logic");
+				// TODO: tt_language this
+				alert("The logic entered for this field is invalid and was not saved!\nIf you leave this page, your entry will be erased.");
 			} else {
 
 				module.ajax("store_calc_mapping", payload).then((response) => {
-					const highlight_time = 2000;
 					// highlight input element to show save occurred
 					// adapted from REDCap core Resources/js/base.js highlightTable
 					highlight_element.effect('highlight', {}, highlight_time);

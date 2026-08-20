@@ -67,3 +67,7 @@
 	.transposed td:not(:last-child) {
 		border-bottom: 0;
 	}
+
+.failed-logic {
+	background-color: #ff0000 !important;
+}
