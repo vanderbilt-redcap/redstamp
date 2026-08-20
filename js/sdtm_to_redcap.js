@@ -101,8 +101,9 @@ $(document).ready(() => {
 				let calc_text = $(event.target).val();
 				let target_uid = $(event.target).attr('id').substring("input_".length)
 
-			debugger;
 			saveValAjax(target_uid, calc_text, event.target);
+			// NOTE: if switching save back to every keystroke, this will need to be called on a mut observer watching the tinymce element
+			closeInfoModals();
 		});
 	}
 
@@ -342,21 +343,15 @@ $(document).ready(() => {
 
 		// HACK: couple closing of rc-ace-editor to this dialog
 		// FIXME: only applies on 2nd instance
-		$(".ui-dialog[aria-describedby='rc-ace-editor-dialog']").on("dialogbeforeclose", () => {
-			$("#myModal").dialog("close")
-		})
+		$(".ui-dialog[aria-describedby='rc-ace-editor-dialog']")
+			.on(
+				"dialogbeforeclose",
+				// HACK: if not wrapped in an anon function, it's called immediately
+				() => { closeInfoModals() }
+			);
 
-		// TODO: check if there are factors
-		$(existing_dialog).on("dialogclose", () => {
-			// HACK: if factor table never launched, trying to close it throws an error
-			$(".sdtm-modal").each((idx, e) => {
-				try {
-					$(e).dialog("close");
-				} catch (err) {
-					// do nothing
-				}
-			});
-		})
+		// NOTE: dialogclose is NOT submitted by tinyMCE when user saves
+		$(existing_dialog).on("dialogclose", () => { closeInfoModals() });
 	}
 
 	// https://bobbyhadz.com/blog/javascript-wait-for-element-to-exist
@@ -577,6 +572,17 @@ $(document).ready(() => {
 				let text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
 				return !~text.indexOf(val);
 			}).hide();
+		});
+	}
+
+	function closeInfoModals() {
+		$("#myModal").dialog("close")
+		$(".sdtm-modal").each((idx, e) => {
+			try {
+				$(e).dialog("close");
+			} catch (err) {
+				// HACK: if factor table never launched, trying to close it throws an error
+			}
 		});
 	}
 
