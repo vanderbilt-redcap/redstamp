@@ -6,9 +6,6 @@
 <p>For each of the subject-level domains you selected, you will need to add one or more mappings from the data collection instruments that capture the data that falls into that domain. Your data collection instruments may collect variables for a single copy of that instrument that need to end up as multiple rows in the SDTM data, these will require separate output rows in your mappings. You may also want to conditionally limit the data that is included in the SDTM, for example whether or not a value was entered or if a leading question indicates that a test was performed, for these you will need to enter the inclusion logic for the output row.</p>
 {% endblock domain_level %}
 
-{% block domain_details %}
-{% endblock domain_details %}
-
 {% block mapping_preview %}
 <script>
   function previewMapping() {
