@@ -1,6 +1,7 @@
 <title>KCKCKC Template map page title</title>
+
 {% block domain_level %}
-{% endblock %}
+{% endblock domain_level %}
 
 <!-- TODO: replace yucky inline script, hacky retention -->
 <script>
@@ -74,6 +75,9 @@
 			 <p>Structure: {{sdtm_domain['datasetStructure']}}</p> -->
 {% endblock domain_details %}
 
+{% block mapping_preview %}
+{% endblock mapping_preview %}
+
 {% block mapping_progress %}
 <p>Mapping progress by type</p>
 
@@ -96,7 +100,7 @@
 <div id="status-update-alert-template" class="status-update alert" role="alert" style="display: none;">
 </div>
 
-{{ sdtm_domain.name }}
+
 {% block mapping_table %}
 {% set current_mappings = getMappings(sdtm_domain.name) %}
 {% set max_instance = current_mappings ? max(current_mappings|column('instance')) : 0 %}
@@ -109,6 +113,8 @@
 
 {% set filter_cols = ["Dataset Name", "Class", "core"] %}
 {% set truncate_cols = ["CDISC Notes"] %}
+
+{% set sdtm_fields = sdtm_domain['datasetVariables'] %}
 
 <!-- TODO: filter for domain -->
 <!-- <table
@@ -135,9 +141,8 @@
 
 	<!-- <button type="button" class="btn btn-outline-warning" id="transpose-table">Transpose</button> -->
 	<!-- FIXME: if this is empty, you'll get an error later, this should be prevented on the config page, but might want to add suspenders to that belt  -->
-{% set sdtm_fields = sdtm_domain['datasetVariables'] %}
 
-<button type="button" class="btn btn-outline-warning" id="add-output-row">Add Output Row</button>
+	<!-- <button type="button" class="btn btn-outline-warning" id="add-output-row">Add Output Row</button> -->
 
 
 <!-- HACK: element needed for logicSuggestTip -->
@@ -263,7 +268,7 @@
 				<!-- Add info -->
 				{% block info_content %}
 				<!-- FIXME: remove if stable -->
-				{% endblock %}
+				{% endblock info_content %}
 
 				<!-- add mapping output rows -->
 				{% for i in 0..max_instance %}
@@ -294,4 +299,4 @@
 {% endblock mapping_table %}
 
 <!-- HACK: confetti for demo only -->
-{{ addJS("./node_modules/canvas-confetti/dist/confetti.browser.js") }}
+{#{ addJS("./node_modules/canvas-confetti/dist/confetti.browser.js") }#}

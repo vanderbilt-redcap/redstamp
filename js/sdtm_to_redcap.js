@@ -120,7 +120,7 @@ $(document).ready(() => {
 			}
 		});
 
-		debugger;
+		// debugger;
 		let payload = {
 			"uid": uid,
 			"domain": domain,
@@ -180,7 +180,7 @@ $(document).ready(() => {
 
 	function addOutputColumn(column_title = null) {
 		// TODO: consider numbering these
-		debugger;
+		// debugger;
 		let col_html = $("#table thead tr th").last().prop("outerHTML");
 		$("#table thead tr").append(col_html);
 
@@ -211,11 +211,6 @@ $(document).ready(() => {
 
 		// HACK: new map buttons don't operate, reapply their click
 		applyMapClick();
-
-		// HACK
-		// FIXME
-
-
 	}
 
 	$("#transpose-table").click(() => { transposeTable(); })
