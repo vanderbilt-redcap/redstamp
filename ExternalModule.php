@@ -21,6 +21,7 @@ class ExternalModule extends AbstractExternalModule
 		"active_subject_level_domains"
 	];
 
+
 	public function redcap_every_page_top($project_id) {
 		$this->initializeJavascriptModuleObject();
 		$this->tt_addToJavascriptModuleObject(
@@ -47,7 +48,7 @@ class ExternalModule extends AbstractExternalModule
 
 		$loader_html = <<<_
 			<div id="loader_modal">
-					<p>Kyle is still trying to optimize load times so you have to wait  </p>
+							<p>Kyle is still trying to optimize load times so you have to wait  :(</p>
 					<img id="loader_bar" src="{$loader_path}"/>
 			</div>
 		_;
@@ -104,7 +105,7 @@ class ExternalModule extends AbstractExternalModule
 			return $this->addCSS($path);
 		}));
 
-		$this->getTwig()->addFunction(new TwigFunction('getSDTMFields', function (array $domain_filter = null) {
+		$this->getTwig()->addFunction(new TwigFunction('getSDTMFields', function (?array $domain_filter = null) {
 			return $this->getSDTMFields($domain_filter);
 		}));
 
@@ -479,6 +480,19 @@ class ExternalModule extends AbstractExternalModule
 				$payload['resource'];
 				$response = json_encode($this->getAvailableSDTMCTs());
 				break;
+			case "apply_mapping":
+				$response = json_encode(
+                    $this->applyMappingToRecord(
+                        $payload['record_id'],
+                        $payload['domain_filter']
+                )
+                );
+
+				// $response = $this->applyMappingToRecord(
+                //         $payload['record_id'],
+                //         $payload['domain_filter']
+                // );
+				break;
 			default:
 				$response = "no room";
 		}
@@ -675,26 +689,62 @@ class ExternalModule extends AbstractExternalModule
 		}
 	}
 
-	public function applyMappingToRecord($record_id) {
+	public function applyMappingToRecord($record_id, string|null $domain_filter = null) {
 		$db_file_name = PROJECT_ID . "_sdtm_mappings.db";
 		$db_full_path = $this->getModulePath() . $db_file_name;
 
 		$sdtmi = new SDTMInterface($db_full_path);
 
-		$mappings = $sdtmi->getMappings();
+		$mappings = $sdtmi->getMappings($domain_filter);
+        //return $mappings;
+		// TODO: break into domain and instance
+  /*
+   * [
+   *  [
+   *  domain => "LB",
+   *  "instances" => [
+   *  0 => [$mappings],
+   *  1 => [$mappings],
+   *  ...
+	*  ]
+	*  ]
+	*  ]
+	 */
 
 		$result = [];
 
 		foreach ($mappings as $m) {
-			// TODO: process conditional logic for an instance prior to attempting any other calcs
-			$is_valid_logic = \LogicTester::isValid($m['calc_text']);
-			if (!$is_valid_logic) {
-				$result[$m['uid']] = ["invalid logic"];
+            // TODO: process conditional logic for an instance prior to attempting any other calcs
+            // HACK: if they deleted their inputs, don't show this
+			if ($m_calc_text === "" || empty($m['calc_text'])) {
 				continue;
 			}
+
+            $this_result = [
+                ...$m,
+                "result" => null
+            ];
+
+            $result[$m['uid']] = $this_result;
+
+
+			$is_valid_logic = \LogicTester::isValid($m['calc_text']);
+			if (!$is_valid_logic) {
+                $this_result["result"] = "invalid logic";
+				$result[$m['uid']] = $this_result;
+				continue;
+			}
+
+
+			// override record_data, extremely similar to base evaluateLogicSingleRecord, but we don't want empty events
+
+
+			// TODO: for fields, should be able to detect source form, from there can eval event/arm assoc and broadcast
+
 			// var_dump($is_valid_logic);
 
 
+			// TODO: if field in calc_text, need to prepend with every event/arm the field exists in?
 			$r = \LogicTester::evaluateLogicSingleRecord(
 				raw_logic: $m['calc_text'],
 				// record: 12217,
@@ -703,13 +753,27 @@ class ExternalModule extends AbstractExternalModule
 				returnValue: true
 			);
 
+            // HACK: json decode completely breaks for nan values, PHP's is_nan also completely breaks if value is a string
+            // this appears to be the case from dropdown fields
+            if (is_float($r) && is_nan($r)) {
+                $r = "NaN";
+            }
 
+            $this_result["result"] = $r;
 
-			$result[$m['uid']] = [
-				...$m,
-				"result" => $r
-			];
+			$result[$m['uid']] = $this_result;
 		}
+
+
+		// sort by domain, instance, key
+		uasort($result, function($a, $b) {
+			return (
+				 $a['domain'] <=> $b['domain'] ?:
+					 ($a['instance'] <=> $b['instance']) ?:
+					 ($a['uid'] <=> $b['uid'])
+			);
+		}
+		);
 
 		return $result;
 

@@ -3,7 +3,7 @@
     "description": "Convert REDCap data to SDTM",
     "namespace": "Vanderbilt\\REDSTAMP\\ExternalModule",
     "documentation": "README.md",
-    "framework-version": 16,
+    "framework-version": 17,
     "authors": [
         {
             "name": "M. Commodore",
@@ -35,13 +35,13 @@
 				"key": "active_study_level_domains",
 				"name": "active_study_level_domains",
 				"type": "json",
-				"hidden": false
+				"hidden": true
 			},
 			{
 				"key": "active_subject_level_domains",
 				"name": "active_subject_level_domains",
 				"type": "json",
-				"hidden": false
+				"hidden": true
 			}
     ],
     "links": {
@@ -110,6 +110,7 @@
 		"get_domains",
 		"get_sdtm_ctr",
 		"check_logic",
-		"lazy_load"
+		"lazy_load",
+		"apply_mapping"
 	]
 }
