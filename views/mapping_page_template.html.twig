@@ -30,7 +30,7 @@
 		{% for domain in sdtm_domains %}
 			<option
 				value="{{ domain.name }}"
-				{% if domain.name == get.domain_filter %}
+				{% if domain.name == (get.domain_filter ?? (domain_filter ?? "")) %}
 				selected disabled
 				{% endif %}
 			>
@@ -224,13 +224,6 @@
 
 	<tbody class="table-group-divider">
 
-		<!-- placeholder row for buttons that are currently in thead -->
-		<!-- <tr id="{{uid}}" class="req-{{row['core']}} map_row">
-				 <td></td>
-				 <td></td>
-				 <td></td>
-				 <td></td>
-				 </tr> -->
 		{% set conditional_logic_field = {
 			'core': '',
 			'name': 'conditional_logic',
@@ -277,8 +270,10 @@
 					{#% endif %#}
 					<td>
 						<!-- <button type="button" class="btn btn-sm btn-secondary map_thing_button">map</button> -->
-						<!-- <input class="calc_text_input" style="display: none;" value="{{current_mappings[uid]}}"> -->
-						<input class="calc_text_input col_instance_{{i}}" id="input_{{uid_i}}" name="input_{{uid_i}}" style="" value="{{current_mappings[uid_i]['calc_text']}}"
+						{#
+							<!-- <input class="calc_text_input" style="display: none;" value="{{current_mappings[uid]}}"> -->
+							#}
+						<input class="calc_text_input col_instance_{{i}}" id="input_{{uid_i}}" name="input_{{uid_i}}" style="" value="{{current_mappings[uid_i]['calc_text'] ?? ''}}"
 							onblur="logicHideSearchTip(this)"
 							onfocus="openLogicEditor($(this))"
 							onkeydown="logicSuggestSearchTip($(this), null, false, true, 0)"
