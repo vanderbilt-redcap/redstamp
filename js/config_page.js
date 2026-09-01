@@ -44,12 +44,17 @@ $(document).ready(() => {
 			 *  restrict to subject-level info
 			 */
 			target_location = module.getUrl("interfaces/sdtm_to_redcap_study_level.php");
-			window.open(target_location);
+			window.open(
+				target_location,
+				"_self" // override current tab
+			);
 		break;
 		case "add-edit-variable-mappings":
 			target_location = module.getUrl("interfaces/sdtm_to_redcap_subject_level.php");
-			// open in new tab
-			window.open(target_location);
+			window.open(
+				target_location,
+				"_self" // override current tab
+			);
 			break;
 		default:
 			console.log(`unfinished case: ${task}`);
@@ -202,7 +207,7 @@ $(document).ready(() => {
 			// NOTE: ajax sourcing data probably not suitable due to lack of ability to preselect
 			// data: data,
 			ajax: {
-				url: '/external_modules/?prefix=redstamp&page=pages%2Flazy_load',
+				url: module.getUrl('pages/lazy_load'),
 				data: (params) => {
 					let query = {
 						search: params.term,
@@ -247,7 +252,7 @@ $(document).ready(() => {
 			// in the event of aggressive rate limiting, store the human readable name and expose it here
 			$.ajax({
 				type: 'GET',
-				url: '/external_modules/?prefix=redstamp&page=pages%2Flazy_load',
+				url: module.getUrl('pages/lazy_load.php'),
 				data: {
 					resource: "getAvailableSDTMCTs"
 				}
