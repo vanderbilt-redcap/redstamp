@@ -1,3 +1,19 @@
+/*
+Color palette optimized for color-blind accessibility based on:
+Wong, B. (2011). Points of view: Color blindness. Nature Methods, 8(6), 441. 
+https://doi.org/10.1038/nmeth.1618
+*/
+:root {
+  --wong-orange: #e69f00;      /* Orange / Amber */
+  --wong-sky-blue: #56b4e9;    /* Sky Blue */
+  --wong-bluish-green: #009e73;/* Teal / Green */
+  --wong-yellow: #f0e442;      /* Yellow */
+  --wong-blue: #0072b2;        /* Dark Blue */
+  --wong-vermillion: #d55e00;  /* Red-Orange */
+  --wong-red-purple: #cc79a7;  /* Pink / Magenta */
+  --wong-black: #000000;       /* Black */
+}
+
 .sticky-header {
 	position: sticky;
 	top: 0;
@@ -69,5 +85,5 @@
 	}
 
 .failed-logic {
-	background-color: #ff0000 !important;
+	background-color: var(--wong-vermillion) !important;
 }
