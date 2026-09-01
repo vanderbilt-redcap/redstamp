@@ -52,14 +52,24 @@ class SDTMInterface
 
 	public function storeMapping(SDTMMapping $sdtm) {
 
+			// INSERT INTO sdtm_mappings (uid, domain, instance, calc_text) VALUES ('{$sdtm->uid}', '{$sdtm->domain}', '{$sdtm->instance}', '{$sdtm->calc_text}')
+
 		$sql = <<<_SQL
-			INSERT INTO sdtm_mappings (uid, domain, instance, calc_text) VALUES ('{$sdtm->uid}', '{$sdtm->domain}', '{$sdtm->instance}', '{$sdtm->calc_text}')
+		INSERT INTO sdtm_mappings (uid, domain, instance, calc_text) VALUES (':uid', ':domain', ':instance', ':calc_text')
 			ON CONFLICT(uid)
 			DO UPDATE SET
 				calc_text = excluded.calc_text;
 		_SQL;
 
-		$result = $this->db->exec($sql);
+		$statement = $this->db->prepare($sql);
+		$statement->bindValue(':uid', $sdtm->uid, SQLITE3_TEXT);
+		$statement->bindValue(':domain', $sdtm->domain, SQLITE3_TEXT);
+		$statement->bindValue(':instance', $sdtm->instance, SQLITE3_TEXT);
+		$statement->bindValue(':calc_text', $sdtm->calc_text, SQLITE3_TEXT);
+
+		// $result = $this->db->exec($sql);
+		// this just replaces ' with "?
+		$result = $statement->execute();
 
 		return $result;
 
