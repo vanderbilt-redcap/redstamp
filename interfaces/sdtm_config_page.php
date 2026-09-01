@@ -53,14 +53,14 @@ if (is_numeric($project_id)) {
 		[
 			'name' => 'sdtmig',
 			'status' => '0',
-			'header' => 'Select the SDTM Implementation Guide (IG) and Controlled Terminology (CT) versions to use',
-			'text' => "You will need to determine which version of SDTM IG and CT you would like to use for this project." .
+			'header' => 'Select versions',
+			'text' => "Select the SDTM Implementation Guide (IG) and Controlled Terminology (CT) versions to use." .
 								"</br>" .
 								'<button id="select-sdtmig" class="config-button btn btn-defaultrc btn-xs fs13">Select SDTM IG Version</button>' .
 								"</br>" .
-								'<button id="select-sdtmct" class="config-button btn btn-defaultrc btn-xs fs13">Select CT Version</button>' .
+								'<button id="select-sdtmct" class="config-button btn btn-defaultrc btn-xs fs13">Select Controlled Terminology Version</button>' .
 								"</br>" .
-								'<button id="select-define-xml" class="config-button btn btn-defaultrc btn-xs fs13">Select Define.XML Version</button>'
+								'<button id="select-define-xml" class="config-button btn btn-defaultrc btn-xs fs13">Select Define.xml Version</button>'
 		],
 		[
 			'name' => 'sdtm_domains',
@@ -92,18 +92,32 @@ if (is_numeric($project_id)) {
 		[
 			'name' => 'sdtm_supp',
 			// 'status' => '0',
-			'header' => 'Define supplemental qualifiers',
-			'text' => 'You may need to create supplemental qualifiers to hold data that doesn’t fit into the existing SDTM variables for a domain.' .
+			'header' => 'Define supplemental qualifiers, extend controlled terminology, and add sponsor-defined terminology',
+
+			'text' => 'You may need to create supplemental qualifiers to hold data that doesn’t fit into the existing SDTM variables for a domain, add codes to extensible controlled terminology lists, or add some sponsor-defined terminology for variables that do not have CDISC controlled terminology compliant terms.' .
 								"</br>" .
-								'<button disabled id="add-edit-supp-quals" class="config-button btn btn-defaultrc btn-xs fs13">Add or edit supplemental qualifiers</button>'
+								'<button disabled id="add-edit-supp-quals" class="config-button btn btn-defaultrc btn-xs fs13">Add or edit supplemental qualifiers</button>' .
+								"</br>" .
+								'<button disabled id="add-edit-supp-quals2" class="config-button btn btn-defaultrc btn-xs fs13">Extend controlled terminology</button>' .
+								"</br>" .
+								'<button disabled id="add-edit-supp-quals3" class="config-button btn btn-defaultrc btn-xs fs13">Add or edit sponsor-defined terminology</button>'
 		],
 		[
 			'name' => 'sdtm_annot',
-			// 'status' => '0',
+			'status' => '0',
 			'header' => 'Complete your annotated forms',
 			'text' => 'Your data collection instruments need to be annotated with target SDTM domains and variables to provide traceability between the data as collected and the SDTM datasets as well as identifying data points that are not included in the SDTM' .
 								"</br>" .
 								'<button disabled id="add-edit-annotations" class="config-button btn btn-defaultrc btn-xs fs13">Add or edit annotations</button>'
+		],
+		[
+			'name' => 'sdtm_csdrg',
+			// 'status' => '0',
+			'header' => 'Create your Clinical Study Data Reviewer\'s Guide (cSDRG)',
+			'text' => "The Clinical Study Data Reviewer's Guide (cSDRG) is a key document in pharmaceutical regulatory submissions for understanding trial data. It helps regulatory agencies like the FDA understand the structure, content, and quality of submitted clinical trial data by providing context beyond the data definitions." .
+								"</br>" .
+								"</br>" .
+								'<button disabled id="add-edit-csdrg-details" class="config-button btn btn-defaultrc btn-xs fs13">Add or edit cSDRG details</button>'
 		],
 		[
 			'name' => 'sdtm_define_xml',
@@ -114,27 +128,22 @@ if (is_numeric($project_id)) {
 								"</br>" .
 
 								'If you used any external code lists, for example MedDRA, you will need to provide the corresponding details.' .
-								"</br>" .
-								'<button disabled id="enter-external-cl-info" class="config-button btn btn-defaultrc btn-xs fs13">Enter external code list information</button>' .
-								"</br>" .
+								'You may also have used methods or have comments to explain the approach to how the data is mapped to an SDTM domain or unusual aspects of your study which affect the SDTM data. These should be documented in Define.xml.' .
 
-								'If you extended any CDISC controlled terminology with additional items, these need to be defined.' .
-								'<button disabled id="define-extended-ctr-items" class="config-button btn btn-defaultrc btn-xs fs13">Define extended controlled terminology items</button>' .
-								"</br>" .
+								'<button disabled id="define-xml-btn" class="config-button btn btn-defaultrc btn-xs fs13">Add or edit Define.xml information</button>'
 
-								'You may have comments to explain your approach to how your data is mapped to an SDTM domain or unusual aspects of your study which affect the SDTM data. These should be documented in Define.xml.' .
-								"</br>" .
-								'<button disabled id="add-edit-comments" class="config-button btn btn-defaultrc btn-xs fs13">Add or edit comments</button>' .
-								"</br>"
-		],
-		[
-			'name' => 'sdtm_csdrg',
-			// 'status' => '0',
-			'header' => 'Create your Clinical Study Data Reviewer\'s Guide (cSDRG)',
-			'text' => "The Clinical Study Data Reviewer's Guide (cSDRG) is a key document in pharmaceutical regulatory submissions for understanding trial data. It helps regulatory agencies like the FDA understand the structure, content, and quality of submitted clinical trial data by providing context beyond the data definitions." .
-								"</br>" .
-								"</br>" .
-								'<button disabled id="add-edit-csdrg-details" class="config-button btn btn-defaultrc btn-xs fs13">Add or edit cSDRG details</button>'
+								// "</br>" .
+								// '<button disabled id="enter-external-cl-info" class="config-button btn btn-defaultrc btn-xs fs13">Enter external code list information</button>' .
+								// "</br>" .
+
+								// 'If you extended any CDISC controlled terminology with additional items, these need to be defined.' .
+								// '<button disabled id="define-extended-ctr-items" class="config-button btn btn-defaultrc btn-xs fs13">Define extended controlled terminology items</button>' .
+								// "</br>" .
+
+								// 'You may have comments to explain your approach to how your data is mapped to an SDTM domain or unusual aspects of your study which affect the SDTM data. These should be documented in Define.xml.' .
+								// "</br>" .
+								// '<button disabled id="add-edit-comments" class="config-button btn btn-defaultrc btn-xs fs13">Add or edit comments</button>' .
+								// "</br>"
 		]
 
 	];

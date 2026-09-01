@@ -29,6 +29,12 @@
 				"key": "active_sdtmct",
 				"name": "active_sdtmct",
 				"type": "text",
+				"hidden": false
+			},
+			{
+				"key": "active_define_xml_version",
+				"name": "active_define_xml_version",
+				"type": "text",
 				"hidden": true
 			},
 			{

@@ -23,6 +23,9 @@ $(document).ready(() => {
 		case "select-sdtmct":
 			infoPanelCT();
 			break;
+		case "select-define-xml":
+			infoPanelDefineXmlVersion();
+			break;
 		case "id-study-level-domains":
 			// TODO: domains are very similar, may just want a bool
 			infoPanelDomain(true);
@@ -294,6 +297,85 @@ $(document).ready(() => {
 							$("button.config-button").prop('disabled', false);
 							$(this).dialog('close');
 						});
+					}
+				}
+			]
+		});
+
+	}
+
+	function infoPanelDefineXmlVersion() {
+		const setting_uid = "sdtm_define_xml_version";
+		const project_settings_key = `active_${setting_uid}`;
+		const current_setting_value = module_project_settings[`active_${setting_uid}`];
+
+		let radio_section = `
+		<span style="font-weight: bold;">Define.xml version</span>
+		<div id="radio-box" style="display: flex; align-items: center; gap: 8px;">
+		<input type="radio" id='xml_2-radio'>
+		<label for="${setting_uid}-select">2.1</label>
+		</div>
+		<div id="radio-box2" style="display: flex; align-items: center; gap: 8px;">
+		<input type="radio" id='${setting_uid}2-select'>
+		<label for="${setting_uid}2-select">2.0</label>
+		</div>
+`;
+
+		let dropdown = `
+		<label for="${setting_uid}-select">Controlled Terminology Version:</label>
+		<select id='${setting_uid}-select'></select>
+		</br>
+`;
+
+		let html =
+			$("<div class='round chklist' style='padding: 10px 20px;'></div>")
+				// .append("<form></form>")
+				// .append("<table style='width: 100%;' cellpadding=0 cellspacing=0></table>")
+				.append(`<p>
+				Select the version of define.xml you will be using. It is recommended to use the most recent version. If using a version 2.1 you will also need to select the version of the define.xml controlled terminology that you will be using
+				</p>
+`)
+				.append(radio_section)
+				.append(dropdown);
+
+		let uid = "Select the SDTM CT version";
+		$("#myModal").html(html);
+
+		let placeholder = null;
+
+		$("#myModal").dialog({
+			bgiframe: true,
+			modal: true,
+			width: 700,
+			title: `${uid}`,
+			position: {
+				collision: "flipfit",
+				// my: "left",
+				// at: "right+5%",
+				// of: ( window )
+			},
+			open: function(){
+				fitDialog(this);
+			},
+			height: "auto",
+			maxHeight: $(window).height() * 0.95,
+			buttons: [
+				{
+					text: "Close",
+					// NOTE: arrow functions void use of "this" to close dialog
+					click: function() { $(this).dialog('close'); }
+				},
+				{
+					text: "Save",
+					click: function() {
+						// let payload = {
+						// 	"setting": "active_sdtmct",
+						// 	"value": $("#sdtmct-select").val()
+						// };
+						// module.ajax("save_project_setting", payload).then((response) => {
+						// 	$("button.config-button").prop('disabled', false);
+						// 	$(this).dialog('close');
+						// });
 					}
 				}
 			]
