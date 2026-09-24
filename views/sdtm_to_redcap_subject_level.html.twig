@@ -8,6 +8,7 @@
 
 {% block mapping_preview %}
 <script>
+	$(() => $("select#preview_mapping_record_id_select").select2());
   function previewMapping() {
 
       $(".result-preview").remove();
@@ -15,7 +16,7 @@
       const module = ExternalModules.Vanderbilt.REDSTAMP.ExternalModule;
 
       const payload = {
-          "record_id": 1,
+          "record_id": $("#preview_mapping_record_id_select").val(),
           "domain_filter": "{{ sdtm_domain['name'] }}"
       };
 
@@ -47,5 +48,16 @@
       }
   }
 </script>
+
+
 <button onclick="previewMapping()">Preview Mapping for {{ sdtm_domain['name'] }}</button>
+
+ for record:
+
+<select id="preview_mapping_record_id_select" class="select2">
+  {% for r in record_ids %}
+  <option value="{{ r }}">{{ r }}</option>
+  {% endfor %}
+</select>
+
 {% endblock mapping_preview %}

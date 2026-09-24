@@ -47,6 +47,15 @@ if (is_numeric($project_id)) {
 
 	// $sdtm_fields = $sdtm_domain['datasetVariables'];
 
+	// fetch record IDs to populate preview dropdown
+	$P = new \Project($module->getProjectId());
+	$record_ids = \REDCap::getData(
+		[
+			// "return_format" => "json-array",
+			"fields" => [$P->table_pk],
+		]
+	);
+	$record_ids = array_keys($record_ids);
 
 	// HACK: bypass EM loadSdtmTwig
 	$html =  $module->getTwig()->render('sdtm_to_redcap_subject_level.html.twig', [
@@ -55,6 +64,7 @@ if (is_numeric($project_id)) {
 		'sdtm_fields' => $sdtm_fields,
 		'sdtm_domains' => $sdtm_domains,
 		'sdtm_ctr' => $module->getSDTMCTR(),
+		'record_ids' => $record_ids,
 		'get' => $_GET
 	]);
 	echo $html;
