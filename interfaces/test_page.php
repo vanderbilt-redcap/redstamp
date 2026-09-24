@@ -29,9 +29,6 @@ if (is_numeric($project_id)) {
 	// $module->addJS('node_modules/bootstrap-table/dist/extensions/filter-control/bootstrap-table-filter-control.min.js');
 
 
-	// bootstrap-table + extensions
-	$module->addJS('js/bootstrap_table_config.js');
-
 	$module->addJS('js/sdtm_to_redcap.js');
 
 	// $module->getModal("calctext_modal.html");

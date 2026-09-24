@@ -1,21 +1,6 @@
 
 {#% block page_content %#}
 
-{{ addCSS('node_modules/bootstrap-table/dist/bootstrap-table.min.css') }}
-{{ addJS('node_modules/bootstrap-table/dist/bootstrap-table.min.js') }}
-
-
-{{ addCSS('node_modules/bootstrap-table/dist/extensions/filter-control/bootstrap-table-filter-control.min.css') }}
-{{ addJS('node_modules/bootstrap-table/dist/extensions/filter-control/bootstrap-table-filter-control.min.js') }}
-
-{{ addJS('node_modules/bootstrap-table/dist/extensions/toolbar/bootstrap-table-toolbar.min.js') }}
-
-{{ addJS('node_modules/bootstrap-table/dist/extensions/key-events/bootstrap-table-key-events.min.js') }}
-
-{{ addJS('node_modules/bootstrap-table/dist/extensions/resizable/bootstrap-table-resizable.min.js') }}
-
-<!-- {{ addJS('node_modules/bootstrap-table/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js') }} -->
-
 <p>Mapping progress by type</p>
 <div class="progress-stacked">
 {% set map_types_progress = ['Req', 'Exp', 'Perm'] %}
@@ -200,9 +185,5 @@
 
 <!-- HACK: confetti for demo only -->
 {{ addJS("./node_modules/canvas-confetti/dist/confetti.browser.js") }}
-
-
-{{ addCSS('node_modules/bootstrap-table/dist/extensions/sticky-header/bootstrap-table-sticky-header.min.css') }}
-{{ addJS('node_modules/bootstrap-table/dist/extensions/sticky-header/bootstrap-table-sticky-header.min.js') }}
 
 
