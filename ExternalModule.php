@@ -716,7 +716,7 @@ class ExternalModule extends AbstractExternalModule
 		foreach ($mappings as $m) {
             // TODO: process conditional logic for an instance prior to attempting any other calcs
             // HACK: if they deleted their inputs, don't show this
-			if ($m_calc_text === "" || empty($m['calc_text'])) {
+			if ($m['calc_text'] === "" || empty($m['calc_text'])) {
 				continue;
 			}
 
