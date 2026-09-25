@@ -74,7 +74,9 @@ $(document).ready(() => {
 		// $(".calc_text_input").on("click", (e) => {
 		// HACK: rather than have to reapply this to every newly appended element
 		// apply to parent
-		$("#table").on("click", '.calc_text_input', (e) => {
+		// FIXME: click/mousedown don't fire for accessibility tool access or tabbing to the input
+		// "focus" should work in those cases, but it results in infoPanel elements being reinstantiated as jQuery re-focuses the trigger element
+		$("#table").on("mousedown", '.calc_text_input', (e) => {
 			let target_uid = $(e.target).parents("tr")[0].id
 			launchInfoPanel(target_uid);
 		});
@@ -332,7 +334,11 @@ $(document).ready(() => {
 			]
 		});
 
-		if (ctr_info.factor_matches.length === 0) {
+		if (
+			ctr_info === undefined ||
+				ctr_info.factor_matches === undefined ||
+				ctr_info.factor_matches.length === 0
+		) {
 			$(".show-factor-button").hide();
 		}
 
