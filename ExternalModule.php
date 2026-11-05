@@ -712,6 +712,9 @@ class ExternalModule extends AbstractExternalModule
 
 		$result = [];
 
+		$LW = new LogicWrapper();
+		$do_event_broadcast = true;
+
 		foreach ($mappings as $m) {
             // TODO: process conditional logic for an instance prior to attempting any other calcs
             // HACK: if they deleted their inputs, don't show this
@@ -743,23 +746,46 @@ class ExternalModule extends AbstractExternalModule
 			// var_dump($is_valid_logic);
 
 
+			// HACK: override with event broadcast
+			if ($do_event_broadcast) {
+				$r = $LW->evaluateLogicAcrossEvents(
+					logic: $m['calc_text'],
+					record: $record_id,
+					project_id: PROJECT_ID
+				);
+			} else {
 			// TODO: if field in calc_text, need to prepend with every event/arm the field exists in?
 			$r = \LogicTester::evaluateLogicSingleRecord(
 				raw_logic: $m['calc_text'],
-				// record: 12217,
 				record: $record_id,
 				// repeat_instance: 1,
 				returnValue: true
 			);
+			}
 
-            // HACK: json decode completely breaks for nan values, PHP's is_nan also completely breaks if value is a string
-            // this appears to be the case from dropdown fields
-            if (is_float($r) && is_nan($r)) {
-                $r = "NaN";
-            }
+			// HACK: json decode completely breaks for nan values, PHP's is_nan also completely breaks if value is a string
+			// this appears to be the case from dropdown fields
+			if ($do_event_broadcast) {
+				foreach ($r as $event_name => &$this_r) {
+					// $r is a single result
+					if (is_float($this_r) && is_nan($this_r)) {
+						$this_r = "NaN";
+					}
+					if (is_float($this_r) && is_infinite($this_r)) {
+						$this_r = "INFTY";
+					}
+				}
+			} else {
+				// $r is a single result
+				if (is_float($r) && is_nan($r)) {
+					$r = "NaN";
+				}
+				if (is_float($r) && is_infinite($r)) {
+					$r = "INFTY";
+				}
+			}
 
-            $this_result["result"] = $r;
-
+			$this_result["result"] = $r;
 			$result[$m['uid']] = $this_result;
 		}
 
