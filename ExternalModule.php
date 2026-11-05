@@ -487,7 +487,6 @@ class ExternalModule extends AbstractExternalModule
                         $payload['domain_filter']
                 )
                 );
-
 				// $response = $this->applyMappingToRecord(
                 //         $payload['record_id'],
                 //         $payload['domain_filter']
