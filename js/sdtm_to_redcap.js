@@ -297,6 +297,9 @@ $(document).ready(() => {
 
 
 		// let existing_dialog = ($("#rc-ace-editor-dialog").length !== 0) ? $("#rc-ace-editor-dialog") : false;
+		if($("#myModal").hasClass("ui-dialog-content")) {
+			$("#myModal").dialog("destroy");
+		}
 		$("#myModal").dialog({
 			title: `${uid}`,
 			position: {

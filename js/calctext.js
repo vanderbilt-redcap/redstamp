@@ -8,7 +8,6 @@
 				width: 350,
 				modal: true,
 				buttons: {
-					// "Create an account": addUser,
 					Cancel: function() {
 						dialog.dialog( "close" );
 					}
