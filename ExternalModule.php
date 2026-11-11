@@ -532,7 +532,7 @@ class ExternalModule extends AbstractExternalModule
 	}
 
 	public function redcap_module_link_check_display($project_id, $link) {
-		$public_pages = ["configPage", "sdtmToRedcapStudyLevel", "sdtmToRedcapSubjectLevel"];
+		$public_pages = ["configPage", "sdtmToRedcapStudyLevel", "sdtmToRedcapSubjectLevel", "exportdatasets"];
 		$cur_user = $this->getUser()->getUsername();
 		// HACK: keep my beta testers form seeing my hacky test pages replace with actual e2e tests
 		$is_admin = in_array($cur_user, ["admin", "kyle.chesney@vumc.org"]);

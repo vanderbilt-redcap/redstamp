@@ -88,6 +88,13 @@
                 "show-header-and-footer": true
             },
             {
+                "name": "Export Datasets",
+                "key": "exportdatasets",
+                "icon": "fa fa-receipt",
+                "url": "interfaces/export_datasets.php",
+                "show-header-and-footer": true
+            },
+            {
                 "name": "test code",
                 "key": "test",
                 "icon": "fa fa-code",
